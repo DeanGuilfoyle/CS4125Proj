@@ -1,0 +1,22 @@
+{% extends 'main/base.html'  %}
+
+{% block content %}
+
+            
+<head>
+    <title>Car List</title>
+</head>
+<body>
+    <h1>Car List</h1>
+    <ul>
+        {% for car in cars %}
+            <li>
+                {{ car.make }} {{ car.model }} ({{ car.year }})<br>
+                Colour: {{ car.colour }}<br>
+                Price per day: {{ car.price_per_day }}<br>
+                Available: {% if car.is_available %}Yes{% else %}No{% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}
