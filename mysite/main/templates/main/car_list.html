@@ -11,11 +11,15 @@
     <ul>
         {% for car in cars %}
             <li>
-                {{ car.make }} {{ car.model }} ({{ car.year }})<br>
+                Car: {{ car.make }} {{ car.model }} ({{ car.year }})<br>
                 Colour: {{ car.colour }}<br>
-                Price per day: {{ car.price_per_day }}<br>
+                Price per day: €{{ car.price_per_day }}<br>
                 Available: {% if car.is_available %}Yes{% else %}No{% endif %}
+                <br>
+                <a href="">Select Car</a>
+                
             </li>
+            <br>
         {% endfor %}
     </ul>
 </body>
