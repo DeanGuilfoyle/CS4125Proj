@@ -163,7 +163,7 @@ class BookCars(ListView):
             max_price = form.cleaned_data.get('max_price')
 
             #Start with a list of all cars
-            cars = Car.objects.all()
+            #cars = Car.objects.all()
 
             """#Apply filters to our cars
             if car_make:
