@@ -12,6 +12,8 @@ def index(response):
 def home(response):
     return render(response, "main/home.html", {})
 
+
+
 class CarListView(ListView):
     model = Car
     template_name = 'main/car_list.html'  # Create this template next
