@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<head>
+    <title>Book Car</title>
+</head>
+<body>
+    <h1>Book Car</h1>
+    <ul>
+        {% for car in cars %}
+            <li>
+                {{ car.make }} {{ car.model }} ({{ car.year }})<br>
+                Colour: {{ car.colour }}<br>
+                Price per day: {{ car.price_per_day }}<br>
+                Available: {% if car.is_available %}Yes{% else %}No{% endif %}<br>
+                
+                <!-- Adds button under cars and makes it so unavailable cars can't be booked -->
+                <form method="POST" action="{% url 'book-car' %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Book Now" {% if not car.is_available %}disabled{% endif %}>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}
+
+
+
+
