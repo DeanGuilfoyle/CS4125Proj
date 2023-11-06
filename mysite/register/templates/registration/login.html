@@ -5,10 +5,11 @@ Log In
 {% endblock %}
 
 {% block content %}
+<h1>Log In</h1>
 <form method="POST">
     {% csrf_token %}
     {{form}}
-    <button type="submit">Log In</button>
+    <button type="submit">Log in</button>
     <p>Don't have an account? <a href="/register">Register</a></p>
 </form>
 {% endblock %}
