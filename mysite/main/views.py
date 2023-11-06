@@ -165,7 +165,7 @@ class BookCars(ListView):
             #Start with a list of all cars
             cars = Car.objects.all()
 
-            #Apply filters to our cars
+            """#Apply filters to our cars
             if car_make:
                 cars = cars.filter(make=car_make)
             if car_year:
@@ -173,7 +173,7 @@ class BookCars(ListView):
             if car_colour:
                 cars = cars.filter(colour=car_colour)
             if max_price is not None:
-                cars = cars.filter(price_per_day__lte=max_price)
+                cars = cars.filter(price_per_day__lte=max_price)"""
 
             #Store the selected filters in our url
             url_params = {}
