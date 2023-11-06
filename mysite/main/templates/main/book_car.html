@@ -6,8 +6,26 @@
 </head>
 <body>
     <h1>Book Car</h1>
+
+    <form method="post" action="{% url 'book-car' %}">
+        {% csrf_token %}
+        <label for="{{ form.car_make.id_for_label }}">Car Make:</label>
+        {{ form.car_make }}
+        
+        <label for="{{ form.car_year.id_for_label }}">Car Year:</label>
+        {{ form.car_year }}
+        
+        <label for="{{ form.car_colour.id_for_label }}">Car Colour:</label>
+        {{ form.car_colour }}
+        
+        <label for="{{ form.max_price.id_for_label }}">Max Price:</label>
+        {{ form.max_price }}
+        
+        <button type="submit">Apply Filters</button>
+    </form>
+
     <ul>
-        {% for car in cars %}
+        {% for car in filtered_cars %}
             <li>
                 {{ car.make }} {{ car.model }} ({{ car.year }})<br>
                 Colour: {{ car.colour }}<br>
