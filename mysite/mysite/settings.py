@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'register.apps.RegisterConfig',
-    #'crispy_forms'
+    'observer.apps.ObserverConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +129,5 @@ CRISPY_TEMPLATE_PACK="bootstrap4"
 
 LOGIN_REDIRECT_URL= "/"
 LOGOUT_REDIRECT_URL= "/"
+
+EMAIL_BACKEND= "django.core.mail.backends.console.EmailBackend"

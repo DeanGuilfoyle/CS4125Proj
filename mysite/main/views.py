@@ -3,6 +3,12 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from .forms import CarFilterForm
 from .models import Car, Booking
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
+from observer.subject import PromotionService
+from observer.observers import EmailAlertObserver
 
 # Create your views here.
 
@@ -15,10 +21,29 @@ def home(response):
 def profile(response):
     return render(response, "main/profile.html", {})
 
-def redirect(response):
+def redirect2(response):
     return render(response, "main/redirect.html", {})
 
+# only staff users can use it
+@staff_member_required
+def send_promotion_email(request):
+    if request.method == 'POST':
+        # Gets all users who are not staff and have an email address
+        users = User.objects.filter(is_staff=False).exclude(email='')
 
+        # Creates a PromotionService instance and attaches observers for each users email
+        promotion_service = PromotionService()
+        for user in users:  
+            observer = EmailAlertObserver(user.email)
+            promotion_service.attach(observer)
+
+        # sends the message to observers
+        promotion_service.notify('Promotion on from the 6th to the 16th of November! 20% off selected models!')
+
+        # Redirect back to the homepage with a success message
+        return HttpResponseRedirect(reverse('home')) 
+
+    
 
 class CarListView(ListView):
     model = Car

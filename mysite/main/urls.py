@@ -11,6 +11,5 @@ urlpatterns = [
     path('book-car/', BookCars.as_view(), name='book-car'),
     path("home", views.home, name="home"),
     path('profile/', views.profile, name="profile"),
-    # path('edit/username/', views.edit_username, name='edit_username'),
-    # path('edit/email/', views.edit_email, name='edit_email'),
+    path('send-promotion/', views.send_promotion_email, name='send_promotion'),
 ]
