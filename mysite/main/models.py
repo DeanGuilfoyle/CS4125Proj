@@ -40,6 +40,7 @@ class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     booking_date = models.DateTimeField(auto_now_add=True)
+    booking_days = models.PositiveIntegerField(default=1)
 
 
 

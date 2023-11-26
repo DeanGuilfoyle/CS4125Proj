@@ -3,6 +3,10 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from .forms import CarFilterForm
 from .models import Car, Booking
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 
@@ -199,6 +203,31 @@ class BookCars(ListView):
         context.update(custom_context)
 
         return render(request, self.template_name, context)
+
+@login_required
+def book_car_detail(request, car_id):
+    car = get_object_or_404(Car, pk=car_id)
+
+    if request.method == 'POST':
+        booking_days = int(request.POST.get('booking_days', 1))
+        booking = Booking.objects.create(user=request.user, car=car, booking_days=booking_days)
+
+        # Making car unavailable after being booked
+        car.is_available = False
+        car.save()
+
+        return redirect('manage-booking', booking_id=booking.id)
+
+    return render(request, 'main/book_car_detail.html', {'car': car})
+
+@login_required
+def manage_booking(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id, user=request.user)
+
+    # Calculating price based on total days booked
+    total_price = booking.car.price_per_day * booking.booking_days
+
+    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price})
 
 
  

@@ -42,17 +42,25 @@
     <title>{% block title %}Home{% endblock %}</title>
 </head>
 <body> 
-    {% if user.is_authenticated %}
+    
+
+<!-- main/base.html -->
+
+{% if user.is_authenticated %}
     <div class="sidenav">
         <a href="/home">Home</a>
         <a href="/car-list">Car List</a>
         <a href="/book-car">Book Car</a>
+        {% if user.booking_set.count > 0 %}
+        <a href="{% url 'manage-booking' booking_id=user.booking_set.last.id %}">Manage Booking</a>
+    {% endif %}
         {% if user.is_staff %}
             <a href="{% url 'admin:index' %}">Admin Panel</a>
         {% endif %}
         <a href="/logout">Log out</a>
     </div>
-    {% endif %}
+{% endif %}
+
 
     <div id="content" name="content" class="main">
         

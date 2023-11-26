@@ -32,9 +32,12 @@
                 Price per day: {{ car.price_per_day }}<br>
                 Available: {% if car.is_available %}Yes{% else %}No{% endif %}<br>
                 
-                <!-- Adds button under cars and makes it so unavailable cars can't be booked -->
-                <form method="POST" action="{% url 'book-car' %}">
+                <!-- Adds form under cars with car information and input for days -->
+                <form method="POST" action="{% url 'book-car-detail' car.id %}">
                     {% csrf_token %}
+                    <input type="hidden" name="car_id" value="{{ car.id }}">
+                    <label for="booking_days">Number of Days:</label>
+                    <input type="number" name="booking_days" min="1" required>
                     <input type="submit" value="Book Now" {% if not car.is_available %}disabled{% endif %}>
                 </form>
             </li>
@@ -42,7 +45,5 @@
     </ul>
 </body>
 {% endblock %}
-
-
 
 
