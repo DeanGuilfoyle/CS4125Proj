@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from . import pricing_states  
+from . import pricing_states
+from .decorators import PricingDecorator, InsuranceDecorator
 
 
 # Create your models here.
@@ -38,10 +39,12 @@ class Car(models.Model):
     is_available = models.BooleanField(default=True)
     pricing_state = models.CharField(max_length=20, default='RegularPricingState') 
 
-    def calculate_rental_price(self, days):
+    def calculate_rental_price(self, car_price):
         # Instantiate the current pricing state and calculate the price
         current_state = getattr(pricing_states, self.pricing_state)()
-        return current_state.calculate_price(days)
+        rental_price = current_state.calculate_price(car_price)
+        decorated_car = InsuranceDecorator(self)
+        return decorated_car.calculate_price(rental_price)
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
