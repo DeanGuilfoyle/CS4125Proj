@@ -11,6 +11,13 @@
     {% else %}
         <p>Welcome, {{ user.username }}!</p>
     
+        {% if user.is_staff %}
+        <form action="{% url 'send_promotion' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Send Promotion Email</button>
+        </form>
+      {% endif %}
+
 
     <p>View our cars: <a href="{% url 'car-list' %}">Car List</a></p>
     {% endif %}
