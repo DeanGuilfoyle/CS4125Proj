@@ -1,0 +1,20 @@
+
+{% extends 'main/base.html' %}
+
+{% block title %}Manage Booking{% endblock %}
+
+{% block content %}
+  <h1>Manage Booking</h1>
+
+  <p>Car: {{ booking.car.make }} {{ booking.car.model }} ({{ booking.car.year }})</p>
+  <p>Colour: {{ booking.car.colour }}</p>
+  <p>{{ info }}</p>
+  <p>Price per day: {{ price_per_day }}</p>
+  <p>Booking days: {{ booking.booking_days }}</p>
+  <p>Total Price: {{ total_price }}</p>
+  
+
+  <!-- Add "Pay Now" button, the functionality can be implemented later -->
+  <button type="button">Pay Now</button>
+{% endblock %}
+

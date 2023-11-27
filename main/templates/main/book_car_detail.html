@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h1>Book Car</h1>
+
+  <div>
+    <h2>{{ car.make }} {{ car.model }} ({{ car.year }})</h2>
+    <p>Colour: {{ car.colour }}</p>
+    <p>Price per day: {{ car.rental_price }}</p>
+    <p>Available: {% if car.is_available %}Yes{% else %}No{% endif %}</p>
+
+    <!-- Form for booking duration -->
+    <form method="POST" action="{% url 'book-car-detail' car.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="car_id" value="{{ car.id }}">
+        <label for="booking_days">Number of Days:</label>
+        <input type="number" name="booking_days" min="1" required>
+        <input type="submit" value="Book Now" {% if not car.is_available %}disabled{% endif %}>
+      </form>      
+  </div>
+{% endblock %}
