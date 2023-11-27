@@ -6,7 +6,7 @@
   <div>
     <h2>{{ car.make }} {{ car.model }} ({{ car.year }})</h2>
     <p>Colour: {{ car.colour }}</p>
-    <p>Price per day: {{ car.price_per_day }}</p>
+    <p>Price per day: {{ car.rental_price }}</p>
     <p>Available: {% if car.is_available %}Yes{% else %}No{% endif %}</p>
 
     <!-- Form for booking duration -->

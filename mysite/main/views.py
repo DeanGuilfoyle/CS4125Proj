@@ -1,11 +1,11 @@
 from urllib.parse import urlencode
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 from .forms import CarFilterForm
 from .models import Car, Booking
-from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+import datetime
 
 
 # Create your views here.
@@ -129,6 +129,7 @@ class BookCars(ListView):
         car_colour = request.GET.get('car_colour')
         max_price = request.GET.get('max_price')
 
+        update_pricing()
         #Start with a list of all cars
         cars = Car.objects.all()
 
@@ -142,11 +143,15 @@ class BookCars(ListView):
         if max_price is not None:
             cars = cars.filter(price_per_day__lte=max_price)
         
-        #self.object_list = cars
+        # Calculate prices for each car
+        for car in cars:
+            car.rental_price = car.calculate_rental_price(car.price_per_day) 
+            car.save()
 
         #place our now filtered list into our context object to be sent to the template
         custom_context = {
             'filtered_cars': cars,
+            'cars': cars,
         }
 
         context = self.get_context_data()
@@ -157,6 +162,7 @@ class BookCars(ListView):
 
     def post(self, request, *args, **kwargs):
         form = CarFilterForm(request.POST)
+        update_pricing()
         cars = Car.objects.all()  # Start with all cars
         if form.is_valid():
             
@@ -193,10 +199,15 @@ class BookCars(ListView):
             # Redirect to the URL with the updated query parameters
             return redirect(f'{self.request.path_info}?{urlencode(url_params)}')
 
-        #self.object_list = cars
+        
+        # Calculate prices for each car
+        for car in cars:
+            car.rental_price = car.calculate_rental_price(car.price_per_day) 
+            car.save()
 
         custom_context = {
             'filtered_cars': cars,
+            'cars': cars,
         }
 
         context = self.get_context_data()
@@ -225,10 +236,29 @@ def manage_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id, user=request.user)
 
     # Calculating price based on total days booked
-    total_price = booking.car.price_per_day * booking.booking_days
+    update_pricing()
+    price_per_day = booking.car.calculate_rental_price(booking.car.price_per_day)
+    total_price = booking.car.calculate_rental_price(booking.car.price_per_day) * booking.booking_days 
 
-    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price})
+    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price, "price_per_day": price_per_day})
 
+def update_pricing():
+    cars = Car.objects.all()
+
+    current_date = datetime.date.today()
+
+    # Update pricing state for each car based on conditions
+    for car in cars:
+
+        # Set pricing state based on conditions
+        if current_date.weekday() in [5, 6]:  # 5 and 6 correspond to Saturday and Sunday
+            car.pricing_state = 'WeekendPricingState'
+        #elif current_date == event:
+            #car.pricing_state = 'PromotionPricingState'
+        else:
+            car.pricing_state = 'RegularPricingState'
+
+        car.save()
 
  
 
