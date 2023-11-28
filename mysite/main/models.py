@@ -46,6 +46,17 @@ class Car(models.Model):
         decorated_car = InsuranceDecorator(self)
         return decorated_car.calculate_price(rental_price)
 
+# sedan inherits from car model and has additional field
+class Sedan(Car):
+    trunk_capacity = models.IntegerField()
+    pass
+
+# coupe inherits from car model and has additional field
+class Coupe(Car):
+    has_panoramic_roof = models.BooleanField(default=False)
+    pass
+
+
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from .models import Car, Booking
+from .models import Car, Booking, Sedan, Coupe
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
@@ -13,4 +13,5 @@ class CarAdmin(admin.ModelAdmin):
         return ", ".join([f"{booking.user.username} ({booking.booking_date})" for booking in bookings]) # creating a formatted list 
 
 admin.site.register(Booking) # Allows for managing the bookings in the admin panel
-
+admin.site.register(Sedan)
+admin.site.register(Coupe)

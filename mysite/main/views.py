@@ -2,13 +2,13 @@ from urllib.parse import urlencode
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 from .forms import CarFilterForm
-from .models import Car, Booking
+from .models import Car, Booking, Sedan, Coupe
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-
+from .factories import SedanFactory, CoupeFactory
 from observer.subject import PromotionService
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -241,32 +241,42 @@ class BookCars(ListView):
 
         return render(request, self.template_name, context)
 
+# creating view for booking a car
 @login_required
 def book_car_detail(request, car_id):
-    car = get_object_or_404(Car, pk=car_id)
+    car = get_object_or_404(Car, pk=car_id)  # getting car object based on its ID, if it doesn't exist returns error
 
-    if request.method == 'POST':
-        booking_days = int(request.POST.get('booking_days', 1))
-        booking = Booking.objects.create(user=request.user, car=car, booking_days=booking_days)
+    if request.method == 'POST':  # checks if form has been submitted
+        booking_days = int(request.POST.get('booking_days', 1)) # getting the number of booking days from the form data
+        booking = Booking.objects.create(user=request.user, car=car, booking_days=booking_days) # makes new booking object in database + records booking days
 
-        # Making car unavailable after being booked
+        # making car unavailable after being booked
         car.is_available = False
         car.save()
 
-        return redirect('manage-booking', booking_id=booking.id)
+        return redirect('manage-booking', booking_id=booking.id) # after booking redirects to manage-booking page, passes in booking id
 
-    return render(request, 'main/book_car_detail.html', {'car': car})
+    return render(request, 'main/book_car_detail.html', {'car': car}) # rendering booking detail page
 
+# creating view function for managing booking
 @login_required
 def manage_booking(request, booking_id):
-    booking = get_object_or_404(Booking, pk=booking_id, user=request.user)
+    booking = get_object_or_404(Booking, pk=booking_id, user=request.user) # retrieves the Booking object with id and associated user
+    #car = booking.car
+
+    #if isinstance(car, Sedan):
+    #    info = f'Trunk Capacity: {car.trunk_capacity}'
+    #elif isinstance(car, Coupe):
+    #    info = f'Has Panoramic Roof: {car.has_panoramic_roof}'
+    # else:
+    #   info = 'No extra information available'
 
     # Calculating price based on total days booked
     update_pricing()
     price_per_day = booking.car.calculate_rental_price(booking.car.price_per_day)
     total_price = booking.car.calculate_rental_price(booking.car.price_per_day) * booking.booking_days 
 
-    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price, "price_per_day": price_per_day})
+    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price, "price_per_day": price_per_day}) #'info': info}) # renders the page with passed in parameters
 
 def update_pricing():
     cars = Car.objects.all()
@@ -285,6 +295,16 @@ def update_pricing():
             car.pricing_state = 'RegularPricingState'
 
         car.save()
+
+@staff_member_required
+def manage_cars(request):
+    sedan_factory = SedanFactory()
+    coupe_factory = CoupeFactory()
+
+    sedan = sedan_factory.create_car()
+    coupe = coupe_factory.create_car()
+
+    return render(request, 'main/manage_cars.html', {'sedan': sedan, 'coupe': coupe})
 
  
 
