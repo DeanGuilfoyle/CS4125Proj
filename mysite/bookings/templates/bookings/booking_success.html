@@ -1,0 +1,11 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h1>Booking Successful</h1>
+
+<p>You have successfully booked the following car:</p>
+<p>Car: {{ car.make }} {{ car.model }} ({{ car.year }})</p>
+<p>Total Price: ${{ total_price }}</p>
+
+<p>Thank you for choosing our service!</p>
+{% endblock %}

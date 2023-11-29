@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h1>Book Car: {{ car.make }} {{ car.model }} ({{ car.year }})</h1>
+
+<div class="row">
+    <form method="post" class="booking-form" id="booking-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.days.id_for_label }}">Days:</label>
+            {{ form.days }}
+            <br>
+        </div>
+
+        <!-- Credit card fields -->
+
+        <!-- Cardholder Name -->
+        <div class="form-group">
+            <label for="cardholder_name">Cardholder Name:</label>
+            <input type="text" id="cardholder_name" name="cardholder_name" class="form-control" style="width: 300px;">
+        </div>
+
+        <div class="form-group">
+            <label for="credit_card_number">Credit Card Number:</label>
+            <input type="text" id="credit_card_number" name="credit_card_number" class="form-control" maxlength="16" style="width: 300px;">
+        </div>
+
+        <div class="form-group">
+            <label for="expiry_date">Expiry Date (DDMM):</label>
+            <input type="text" id="expiry_date" name="expiry_date" class="form-control" maxlength="4" style="width: 100px;">
+        </div>
+
+        <div class="form-group">
+            <label for="cvc">CVV:</label>
+            <input type="text" id="cvc" name="cvc" class="form-control" maxlength="3" style="width: 100px;">
+        </div>
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" id="book-button">Book</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('book-button').addEventListener('click', function () {
+    // Check the validity of the form
+    const form = document.getElementById('booking-form');
+    if (form.checkValidity()) {
+        // If the form is valid, submit it
+        form.submit();
+    } else {
+        // If the form is not valid, show an alert
+        alert("Please fill in all required fields correctly.");
+    }
+});
+</script>
+{% endblock %}
