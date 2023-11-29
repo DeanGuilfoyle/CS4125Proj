@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'register.apps.RegisterConfig',
     'observer.apps.ObserverConfig',
+    'bookings.apps.BookingsConfig',
 ]
 
 MIDDLEWARE = [

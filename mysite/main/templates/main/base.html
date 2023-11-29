@@ -1,13 +1,20 @@
 <html>
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <style type="text/css">
         body {
             font-family: 'Open Sans', sans-serif; 
         }
 
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
         .sidenav {
             height: 100%;
-            width: 200px;
+            width: 250px;
             position: fixed;
             z-index: 1;
             top: 0;
@@ -34,7 +41,7 @@
         }
 
         .main {
-            margin-left: 220px;
+            margin-left: 270px;
             padding: 0px 10px;
         }
     </style>
@@ -44,19 +51,18 @@
 <body> 
     
 
-<!-- main/base.html -->
 
 {% if user.is_authenticated %}
     <div class="sidenav">
         <a href="/home">Home</a>
         <a href="/car-list">Car List</a>
-        <a href="/book-car">Book Car</a>
-        {% if user.booking_set.count > 0 %}
-        <a href="{% url 'manage-booking' booking_id=user.booking_set.last.id %}">Manage Booking</a>
-    {% endif %}
+
+            <a href="{% url 'view-bookings' %}">Your Bookings</a>
         {% if user.is_staff %}
-            <a href="{% url 'admin:index' %}">Admin Panel</a>
+            
+            <a href="{% url 'view-all-bookings' %}">Manage Bookings</a>
             <a href="{% url 'manage-cars' %}">Manage Cars</a>
+            <a href="{% url 'admin:index' %}">Admin Panel</a>
         {% endif %}
         <a href="/logout">Log out</a>
     </div>
