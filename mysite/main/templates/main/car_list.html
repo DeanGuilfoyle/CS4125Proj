@@ -1,41 +1,57 @@
-{% extends 'main/base.html'  %}
+{% extends 'main/base.html' %}
 
 {% block content %}
+<div style="width: 90%;">
+  <h1>Car List</h1>
 
-            
-<head>
-    <title>Car List</title>
-</head>
-<body>
-    <h1>Car List</h1>
+  <form method="post" action="{% url 'car-list' %}">
+    {% csrf_token %}
+    <label for="{{ form.car_make.id_for_label }}">Car Make:</label>
+    {{ form.car_make }}
+    
+    <label for="{{ form.car_year.id_for_label }}">Car Year:</label>
+    {{ form.car_year }}
+    
+    <label for="{{ form.car_colour.id_for_label }}">Car Colour:</label>
+    {{ form.car_colour }}
+    
+    <label for="{{ form.max_price.id_for_label }}">Max Price:</label>
+    {{ form.max_price }}
+    
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+  </form>
 
-    <form method="post" action="{% url 'car-list' %}">
-        {% csrf_token %}
-        <label for="{{ form.car_make.id_for_label }}">Car Make:</label>
-        {{ form.car_make }}
-        
-        <label for="{{ form.car_year.id_for_label }}">Car Year:</label>
-        {{ form.car_year }}
-        
-        <label for="{{ form.car_colour.id_for_label }}">Car Colour:</label>
-        {{ form.car_colour }}
-        
-        <label for="{{ form.max_price.id_for_label }}">Max Price:</label>
-        {{ form.max_price }}
-        
-        <button type="submit">Apply Filters</button>
-    </form>
-
-    <ul>
-        {% for car in filtered_cars %}
-            <li>
-                {{ car.make }} {{ car.model }} ({{ car.year }})<br>
-                Colour: {{ car.colour }}<br>
-                Price per day: {{ car.price_per_day }}<br>
-                Available: {% if car.is_available %}Yes{% else %}No{% endif %}<br>
-                <br>
-            </li>
-        {% endfor %}
-    </ul>
-</body>
+  <table style="width: 800px;" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Car</th>
+        <th>Colour</th>
+        <th>Price per day</th>
+        <th>Available</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for car in filtered_cars %}
+        <tr>
+          <td>{{ car.make }} {{ car.model }} ({{ car.year }})</td>
+          <td>{{ car.colour }}</td>
+          <td>${{ car.price_per_day }}</td>
+          <td>
+            {% if car.booking_set.all %}
+              No
+            {% else %}
+              Yes
+            {% endif %}
+          </td>
+          <td>
+            {% if car.is_available and not car.booking_set.all %}
+              <a href="{% url 'book-car' car.id %}" class="btn btn-success">Book Now</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
