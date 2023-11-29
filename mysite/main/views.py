@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
-from .forms import CarFilterForm
+from .forms import CarFilterForm, PaymentsForm
 from .models import Car, Booking, Sedan, Coupe
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -13,6 +13,7 @@ from observer.subject import PromotionService
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from observer.observers import EmailAlertObserver
+from django.contrib import messages
 
 
 # Create your views here.
@@ -262,21 +263,23 @@ def book_car_detail(request, car_id):
 @login_required
 def manage_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id, user=request.user) # retrieves the Booking object with id and associated user
-    #car = booking.car
 
-    #if isinstance(car, Sedan):
-    #    info = f'Trunk Capacity: {car.trunk_capacity}'
-    #elif isinstance(car, Coupe):
-    #    info = f'Has Panoramic Roof: {car.has_panoramic_roof}'
-    # else:
-    #   info = 'No extra information available'
+    car = booking.car  # retrieving current car that has been booked
+
+    # not properly working yet, but should be checking whether the car is a Sedan/Coupe, and displays the extra information tied to these cars 
+    if isinstance(car, Sedan):
+        info = f'Trunk Capacity: {car.trunk_capacity}'
+    elif isinstance(car, Coupe):
+        info = f'Has Panoramic Roof: {car.has_panoramic_roof}'
+    else:
+        info = 'No extra information available'
 
     # Calculating price based on total days booked
     update_pricing()
     price_per_day = booking.car.calculate_rental_price(booking.car.price_per_day)
     total_price = booking.car.calculate_rental_price(booking.car.price_per_day) * booking.booking_days 
 
-    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price, "price_per_day": price_per_day}) #'info': info}) # renders the page with passed in parameters
+    return render(request, 'main/manage_booking.html', {'booking': booking, 'total_price': total_price, "price_per_day": price_per_day,'info': info}) # renders the page with passed in parameters
 
 def update_pricing():
     cars = Car.objects.all()
@@ -298,13 +301,32 @@ def update_pricing():
 
 @staff_member_required
 def manage_cars(request):
+
+    # creating instances of the Factories
     sedan_factory = SedanFactory()
     coupe_factory = CoupeFactory()
 
+    # creating an instance of sedan/coupe using the factories
     sedan = sedan_factory.create_car()
     coupe = coupe_factory.create_car()
 
+    # renders the page for manage cars, that displays the details of sedans and coupes
     return render(request, 'main/manage_cars.html', {'sedan': sedan, 'coupe': coupe})
+
+# payment function
+def process_payments(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+
+    if request.method == 'POST':
+        form = PaymentsForm(request.POST)  # creates instance of PaymentForm
+        if form.is_valid():
+            return render(request, 'main/payment_successful.html')  # renders the payment success page
+        else:
+            messages.error(request, 'Please fill in all details.')
+    else:
+        form = PaymentsForm()
+
+    return render(request, 'main/process_payments.html', {'form': form})  # renders the process payments page
 
  
 

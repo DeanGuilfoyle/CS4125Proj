@@ -18,3 +18,11 @@ class CarFilterForm(forms.Form):
     max_price = forms.DecimalField(min_value=0, required=False)
     #start_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=range(2023, 2030)))
     #end_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=range(2023, 2030)))
+
+# creating the payment form
+class PaymentsForm(forms.Form):
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    credit_card_number = forms.CharField(max_length=16)
+    expiry_date = forms.CharField(max_length=5, widget=forms.TextInput(attrs={'placeholder': 'MM/YY'}))
+    cvv = forms.CharField(max_length=3)

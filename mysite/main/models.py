@@ -38,6 +38,7 @@ class Car(models.Model):
     price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
     is_available = models.BooleanField(default=True)
     pricing_state = models.CharField(max_length=20, default='RegularPricingState') 
+    
 
     def calculate_rental_price(self, car_price):
         # Instantiate the current pricing state and calculate the price
@@ -58,10 +59,10 @@ class Coupe(Car):
 
 
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    booking_date = models.DateTimeField(auto_now_add=True)
-    booking_days = models.PositiveIntegerField(default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # key indicating user whos currently booking
+    car = models.ForeignKey('Car', on_delete=models.CASCADE) # key indicating car that is being booked
+    booking_date = models.DateTimeField(auto_now_add=True) # setting date and time
+    booking_days = models.PositiveIntegerField(default=1)  # number of days car is booked
 
 
 
