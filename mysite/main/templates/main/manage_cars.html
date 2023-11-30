@@ -5,9 +5,47 @@
 <html>
 <head>
     <title>Manage Cars</title>
+    <style>
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .delete-button {
+            background-color: #ff6666;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <h1>Manage Cars</h1>
+
     <p>Sedan Details:</p>
     <ul>
         <li>Trunk Capacity: {{ sedan.trunk_capacity }}</li>
@@ -17,6 +55,31 @@
     <ul>
         <li>Panoramic Roof: {% if coupe.has_panoramic_roof %}Yes{% else %}No{% endif %}</li>
     </ul>
+
+    <p>All Cars:</p>
+    <table>
+        <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Action</th>
+        </tr>
+        {% for car in cars %}
+            <tr>
+                <td>{{ car.make }}</td>
+                <td>{{ car.model }}</td>
+                <td>{{ car.year }}</td>
+                <td>
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="car_id" value="{{ car.id }}">
+                        <button class="delete-button" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
+
 {% endblock %}

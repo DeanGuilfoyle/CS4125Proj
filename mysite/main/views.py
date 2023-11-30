@@ -138,11 +138,6 @@ class CarListView(ListView):
         return render(request, self.template_name, context)
 
 
-
-
-
-
-
 def update_pricing():
     cars = Car.objects.all()
 
@@ -161,15 +156,30 @@ def update_pricing():
 
         car.save()
 
+
 @staff_member_required
 def manage_cars(request):
+    # Creating instances of the Factories
     sedan_factory = SedanFactory()
     coupe_factory = CoupeFactory()
 
+    # Creating an instance of sedan/coupe using the factories
     sedan = sedan_factory.create_car()
     coupe = coupe_factory.create_car()
 
-    return render(request, 'main/manage_cars.html', {'sedan': sedan, 'coupe': coupe})
+    # fetching the list of all cars
+    cars = Car.objects.all()
+
+    # making it so cars can be deleted and removed from database
+    if request.method == 'POST':
+        car_id = request.POST.get('car_id')
+        if car_id:
+            car = get_object_or_404(Car, id=car_id)
+            car.delete()
+            return redirect('manage-cars')
+
+    # Renders the page for manage cars, that displays the details of sedans and coupes
+    return render(request, 'main/manage_cars.html', {'sedan': sedan, 'coupe': coupe, 'cars': cars})
 
  
 
